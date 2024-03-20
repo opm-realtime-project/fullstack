@@ -1,28 +1,30 @@
-module.exports = function errHandler(err, req, res, next) {
-    let status = err.status || 500
-    let message = err.message || 'Internal Server Error'
-
+const errHandler = (err, req, res, next) => {
     switch (err.name) {
-        case "SequelizeValidationError":
-        case "SequelizeUniqueConstraintError":
-            status = 400;
-            message = err.errors[0].message
-            break;
-        
-        case "Email must be unique":
-            status = 400;
-            message = "Email must be unique"
-            break;
-        
-        case "JsonWebTokenError":
-        case "InvalidToken":
-            status = 401
-            message = "Invalid Token"
-            break;
-            
-        default:
-            console.log(err);
-            res.status(status).json({message})
-            break;
+      case "SequelizeValidationError":
+      case "SequelizeUniqueConstraintError":
+        res.status(400).json({ message: err.errors[0].message });
+        break;
+      case "Email/Password Required":
+        res.status(400).json({ message: "Email/Password Required" });
+        break;      
+      case "InvalidLogin":
+        res.status(401).json({ message: "Invalid Email/Password" });
+        break;
+      case "LoginValidation":
+        res.status(401).json({ message: "Silahkan login dahulu" });
+        break;
+      case "NoUserFound":
+        res.status(404).json({ message: "Silahkan daftar dahulu" });
+        break;
+      case "Invalid Token":
+      case "JsonWebTokenError":
+        res.status(401).json({ message: "Token Failed" });
+        break;
+      default:
+        console.log(err, "ini errornya");
+        res.status(500).json({ message: "Internal Server Error" });
+        break;
     }
-}
+  };
+  
+  module.exports = { errHandler };

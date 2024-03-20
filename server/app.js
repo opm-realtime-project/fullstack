@@ -10,6 +10,7 @@ const app = express();
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 const cors = require('cors');
+const { errHandler } = require("./middlewares/ErrorHandler");
 const PORT = 3000;
 app.use(cors());
 app.use(express.urlencoded({extended:true}))
@@ -62,6 +63,8 @@ app.get('/', (req, res) => {
 
 app.post('/register', UserController.register)
 app.post('/login',  UserController.login )
+
+app.use(errHandler)
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on ${PORT}`)
