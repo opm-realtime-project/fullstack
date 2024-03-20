@@ -2,9 +2,7 @@
 if (process.env.NODE_ENV !== "production"){
     require("dotenv").config()
   }
-
 const express = require('express');
-const authentication = require("./middlewares/authentication");
 const UserController = require("./controllers/UserController");
 const app = express();
 const { Server } = require("socket.io");
@@ -23,7 +21,7 @@ const io = new Server(httpServer, {
   }
 });
 
-let users = [];
+let users = {};
 let messages = [];
 
 io.on("connection", (socket) => {
@@ -31,31 +29,48 @@ io.on("connection", (socket) => {
 
   console.log(socket.handshake.auth, "<<< handshake");
 
-  if (socket.handshake.auth.username) {
-    users.push(socket.handshake.auth.username);
+  const { username } = socket.handshake.auth;
+  if (username) {
+    users[username] = socket.id; // Store the socket ID associated with the username
   }
 
   socket.emit("message", "Welcome to the socket server ", + socket.id);
   socket.emit("message:info", messages);
 
-  io.emit("users", users);
+  io.emit("users", Object.keys(users)); // Send the list of online users
 
   socket.on("message:new", (param) => {
     messages.push(param);
     io.emit("message:info", param);
-  })
+  });
+
+  socket.on("private:message", (param) => {
+    const { from, to, message } = param;
+    const recipientSocketId = users[to];
+    const senderSocketId = users[from];
+    if (recipientSocketId && senderSocketId) {
+        const privateMessage = { from, to, message };
+        io.to(recipientSocketId).emit("private:message", privateMessage);
+        io.to(senderSocketId).emit("private:message", privateMessage);
+    } else {
+        console.log("Recipient or sender socket not found for user.");
+    }
+  });
 
   socket.on('canvas-data', (data) => {
     socket.broadcast.emit('canvas-data', data)
-})
+  });
 
   socket.on("disconnect", () => {
-    users = users.filter((user) => {
-      return user !== socket.handshake.auth.username
-    })
-    io.emit('users', users);
-  })
-})
+    for (const [key, value] of Object.entries(users)) {
+      if (value === socket.id) {
+        delete users[key]; // Remove the disconnected user from the users map
+        break;
+      }
+    }
+    io.emit('users', Object.keys(users));
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
