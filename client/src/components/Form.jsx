@@ -9,7 +9,7 @@ function Form(){
         password: ''
     });
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleChangeInput = (item) => {
         const {name, value} = item.target
@@ -19,27 +19,26 @@ function Form(){
         })
     }
 
-    const handleFromLogin = async (item) => {
-        item.preventDefault()
+    const handleFormLogin = async (item) => {
+        item.preventDefault();
         try {
-            const {data} = await axios({
+            const { data } = await axios({
                 method: 'post',
-                url: 'https://localhost:3000/login',
+                url: 'http://localhost:3000/login',
                 data: input
             })
 
-            console.log(data);
-
             localStorage.setItem('accessToken', data.accessToken)
+            localStorage.setItem('user', data.user.username)
             
+            navigate("/");
+
             swal.fire({
                 title: 'Success login',
                 icon: 'success',
                 timer: 1000,
                 showConfirmButton: false
             })
-    
-
         } catch (error) {
             console.log(error);
             swal.fire({
@@ -48,7 +47,6 @@ function Form(){
                 timer: 1000,
                 showConfirmButton: false
             })
-            console.log(error);
         }
     }
 
@@ -88,7 +86,7 @@ function Form(){
         Enter your credentials to access your account
       </div>
       <div className="mt-10">
-        <form onSubmit={handleFromLogin}>
+        <form onSubmit={handleFormLogin}>
           <div className="flex flex-col mb-5">
             <label
               htmlFor="email"
