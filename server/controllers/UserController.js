@@ -7,8 +7,8 @@ module.exports = class UserController {
         try {
             let {username, email, password} = req.body
 
-            if(!password){
-                throw ({message: "Email/Password can't be empty"})
+            if(!password || !email){
+                throw ({name: "Email/Password Required"})
             }
 
             let data = await User.create ({
@@ -17,10 +17,10 @@ module.exports = class UserController {
                 password: password, 
             })
 
-            res.status(201).json(data)
+            res.status(201).json({username: data.username, email: data.email})
         } catch (err) {
             console.log(err);
-            next()
+            next(err)
         }
     }
 
@@ -29,7 +29,7 @@ module.exports = class UserController {
             const {email, password} = req.body
             // console.log(email, "EMAIL", password, "PASSWORD");
             if (!email || !password){
-                throw {name: "Bad Request", message: "email and password is required", status: 400}
+                throw {name: "InvalidLogin"}
             }
 
             const user = await User.findOne({
@@ -39,18 +39,17 @@ module.exports = class UserController {
             })
 
             if(!user){
-                throw {name: "Unauthorized", message: "email wrong", status: 401}
+                throw {name: "NoUserFound"}
             }
 
             const isValidPassword = comparePassword(password, user.password)
             if(!isValidPassword){
-                throw {name: "Unauthorized", message: "password wrong", status: 401}
+                throw {name: "InvalidLogin"}
             }
 
             const accessToken = signToken({id: user.id, email: user.email})
 
             res.status(200).json({"user": {
-                id: user.id,
                 username: user.username,
                 email: user.email
             }, accessToken})
