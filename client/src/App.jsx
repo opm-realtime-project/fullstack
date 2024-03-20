@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, redirect, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import MainLayout from "./components/MainLayout";
 import LoginPage from "./pages/LoginPage";
@@ -13,10 +13,22 @@ const router = createBrowserRouter([
         element: <Home />,
       },
     ],
+    loader: () => {
+      if (!localStorage.accessToken) {
+        return redirect("/login")
+      }
+      return null;
+    }
   },
   {
     path: "/login",
-    element: <LoginPage />
+    element: <LoginPage />,
+    loader: () => {
+      if (localStorage.accessToken) {
+        return redirect("/")
+      }
+      return null;
+    }
   },
   {
     path: "/register",
