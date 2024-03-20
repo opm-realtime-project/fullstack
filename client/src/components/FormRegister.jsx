@@ -1,11 +1,51 @@
-import { Link } from "react-router-dom"
+import axios from "axios"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import swal from 'sweetalert2'
 
 function FormRegister(){
+
+  const navigate = useNavigate()
+
+  const [input, setInput] = useState({
+    username: "",
+    email: "",
+    password: ""
+  })
+
+    function handleInput(e){
+      const {name, value} = e.target
+      setInput({
+        ...input,
+        [name]: value
+    })
+    }
+
+    async function handleRegister(e){
+        e.preventDefault()
+        try {
+
+              await axios({
+              method: 'post',
+              url: 'http://localhost:3000/register',
+              data: input
+            })
+            
+            navigate('/login')
+
+        } catch (error) {
+            console.log(error);
+            swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message
+            });
+        }
+    }
 
     return (
         <>  
             <>
-  {/* component */}
   <meta charSet="UTF-8" />
   <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,10 +78,10 @@ function FormRegister(){
         Enter your credentials to get access account
       </div>
       <div className="mt-10">
-        <form action="#">
+        <form onSubmit={handleRegister}>
           <div className="flex flex-col mb-5">
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="mb-1 text-xs tracking-wide text-gray-600"
             >
               Name:
@@ -63,9 +103,9 @@ function FormRegister(){
                 <i className="fas fa-user text-blue-500" />
               </div>
               <input
-                id="email"
-                type="email"
-                name="email"
+                id="username"
+                type="text"
+                name="username"
                 className="
               text-sm
               placeholder-gray-500
@@ -78,6 +118,7 @@ function FormRegister(){
               focus:outline-none focus:border-blue-400
             "
                 placeholder="Enter your name"
+                onChange={handleInput}
               />
             </div>
           </div>
@@ -120,6 +161,7 @@ function FormRegister(){
               focus:outline-none focus:border-blue-400
             "
                 placeholder="Enter your email"
+                onChange={handleInput}
               />
             </div>
           </div>
@@ -164,6 +206,7 @@ function FormRegister(){
               focus:outline-none focus:border-blue-400
             "
                 placeholder="Enter your password"
+                onChange={handleInput}
               />
             </div>
           </div>

@@ -42,7 +42,7 @@ function Form(){
         } catch (error) {
             console.log(error);
             swal.fire({
-                text: error,
+                text: error.response.data.message,
                 icon: "error",
                 timer: 1000,
                 showConfirmButton: false
