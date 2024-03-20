@@ -44,6 +44,10 @@ io.on("connection", (socket) => {
     io.emit("message:info", param);
   })
 
+  socket.on('canvas-data', (data) => {
+    socket.broadcast.emit('canvas-data', data)
+})
+
   socket.on("disconnect", () => {
     users = users.filter((user) => {
       return user !== socket.handshake.auth.username
