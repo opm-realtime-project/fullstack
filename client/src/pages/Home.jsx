@@ -1,7 +1,11 @@
+import Container from "../components/container/container";
+
 function Home() {
   return (
     <>
-      <div>ini home</div>
+      <div>
+        <Container/>
+      </div>
     </>
   );
 }
