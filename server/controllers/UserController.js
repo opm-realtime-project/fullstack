@@ -3,7 +3,7 @@ const { signToken } = require('../helpers/jwt');
 const {User} = require('../models');
 
 module.exports = class UserController {
-    static async register(req, res){
+    static async register(req, res, next){
         try {
             let {username, email, password} = req.body
 
@@ -18,12 +18,13 @@ module.exports = class UserController {
             })
 
             res.status(201).json(data)
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            console.log(err);
+            next()
         }
     }
 
-    static async login(req, res){
+    static async login(req, res, next){
         try {
             const {email, password} = req.body
             // console.log(email, "EMAIL", password, "PASSWORD");
@@ -36,7 +37,6 @@ module.exports = class UserController {
                     email
                 }
             })
-            console.log(user, '>>>>>> ini user');
 
             if(!user){
                 throw {name: "Unauthorized", message: "email wrong", status: 401}
@@ -49,10 +49,15 @@ module.exports = class UserController {
 
             const accessToken = signToken({id: user.id, email: user.email})
 
-            res.status(200).json({message: 'login success', accessToken})
+            res.status(200).json({"user": {
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }, accessToken})
 
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            console.log(err);
+            next(err)
         }
     }
 }
