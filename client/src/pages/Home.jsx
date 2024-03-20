@@ -1,4 +1,6 @@
+import { useState } from "react";
 import Container from "../components/container/container";
+
 import { useEffect, useState } from "react";
 import socket from "../socket.js";
 
@@ -15,6 +17,7 @@ function Home() {
 
     socket.connect();
   });
+
 
   return (
     <>
