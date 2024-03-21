@@ -10,9 +10,6 @@ class container extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="color-picker-container">
-          <input type="color" />
-        </div>
         <div className="board-container">
           <Board />
         </div>
