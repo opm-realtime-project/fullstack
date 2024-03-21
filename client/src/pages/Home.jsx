@@ -216,7 +216,8 @@ function Home() {
                 </form>
               </div>
               {showContainer && <Container className="flex flex-col w-1/4" />}
-            </div>)}
+            </div>
+          )}
         </div>
       </div>
     </>

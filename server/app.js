@@ -1,7 +1,7 @@
 // npx sequelize-cli model:generate --name User --attributes username:string,email:string,password:string
 if (process.env.NODE_ENV !== "production"){
-    require("dotenv").config()
-  }
+  require("dotenv").config()
+}
 const express = require('express');
 const UserController = require("./controllers/UserController");
 const app = express();

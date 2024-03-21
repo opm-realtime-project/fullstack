@@ -27,7 +27,7 @@ module.exports = class UserController {
     static async login(req, res, next){
         try {
             const {email, password} = req.body
-            // console.log(email, "EMAIL", password, "PASSWORD");
+            
             if (!email || !password){
                 throw {name: "InvalidLogin"}
             }
