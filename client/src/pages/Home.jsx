@@ -64,7 +64,8 @@ function Home() {
 
   const handleClick = (e) => {
     e.preventDefault();
-    setShowContainer(true);
+    if(showContainer === false) setShowContainer(true)
+    if(showContainer === true) setShowContainer(false)
   };
 
   const handleUserClick = (user) => {
