@@ -7,9 +7,9 @@ import { ThemeContext } from "../context/ThemeContext.jsx";
 function Home() {
   const [users, setUsers] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState([]);
   const [showContainer, setShowContainer] = useState(false);
   const [target, setTarget] = useState("");
+  const [targetMsg, setTargetMsg] = useState({});
 
   useEffect(() => {
     socket.disconnect();
@@ -25,13 +25,17 @@ function Home() {
       setUsers(param);
     });
 
-    socket.on("message:info", (param) => {
-      setMessages(messages.concat(param));
-    });
-
     socket.on("private:message", (param) => {
       const { from, to, message } = param;
-      setMessages(messages.concat({ from, to, message }));
+
+      let targetUser = localStorage.user === from ? to : from;
+      const oldUserMessage = targetMsg[targetUser] ? targetMsg[targetUser] : [];
+      oldUserMessage.push({ from, to, message });
+
+      setTargetMsg({
+        ...targetMsg,
+        [targetUser]: oldUserMessage,
+      });
     });
 
     return () => {
@@ -39,7 +43,7 @@ function Home() {
       socket.off("message:info");
       socket.off("private:message");
     };
-  }, [messages]);
+  }, [targetMsg, target]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -117,7 +121,7 @@ function Home() {
                 <div className="flex flex-col h-full overflow-x-auto mb-4">
                   <div className="flex flex-col h-full">
                     <div className="grid grid-cols-12 gap-y-2">
-                      {messages.map((item, index) => {
+                      {(targetMsg[target] ?? []).map((item, index) => {
                         return item.from === localStorage.user ? (
                           <div
                             className="col-start-6 col-end-13 p-3 rounded-lg"
