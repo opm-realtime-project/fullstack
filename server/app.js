@@ -31,13 +31,13 @@ io.on("connection", (socket) => {
 
   const { username } = socket.handshake.auth;
   if (username) {
-    users[username] = socket.id; // Store the socket ID associated with the username
+    users[username] = socket.id;
   }
 
   socket.emit("message", "Welcome to the socket server ", + socket.id);
   socket.emit("message:info", messages);
 
-  io.emit("users", Object.keys(users)); // Send the list of online users
+  io.emit("users", Object.keys(users));
 
   socket.on("message:new", (param) => {
     messages.push(param);
@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     for (const [key, value] of Object.entries(users)) {
       if (value === socket.id) {
-        delete users[key]; // Remove the disconnected user from the users map
+        delete users[key];
         break;
       }
     }
