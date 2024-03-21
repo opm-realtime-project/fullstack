@@ -60,7 +60,8 @@ function Home() {
 
   const handleClick = (e) => {
     e.preventDefault();
-    setShowContainer(true);
+    if(showContainer === false) setShowContainer(true)
+    if(showContainer === true) setShowContainer(false)
   };
 
   const handleUserClick = (user) => {
@@ -211,7 +212,7 @@ function Home() {
                 </form>
               </div>
               {showContainer && <Container className="flex flex-col w-1/4" />}
-            </div>
+            </div>)}
         </div>
       </div>
     </>
