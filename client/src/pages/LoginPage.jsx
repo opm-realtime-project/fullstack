@@ -1,10 +1,10 @@
-import Form from "../components/Form"
+import Form from "../components/Form";
 
-function LoginPage(){
-    return (
-        <>
-            <Form />
-        </>
-    )
+function LoginPage() {
+  return (
+    <>
+      <Form />
+    </>
+  );
 }
-export default LoginPage
+export default LoginPage;

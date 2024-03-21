@@ -1,6 +1,8 @@
 import Container from "../components/container/container";
 import { useEffect, useState } from "react";
 import socket from "../socket.js";
+import { useContext } from "react";
+import { ThemeContext } from "../context/ThemeContext.jsx";
 
 function Home() {
   const [users, setUsers] = useState([]);
