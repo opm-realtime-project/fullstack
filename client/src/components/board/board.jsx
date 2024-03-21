@@ -39,6 +39,7 @@ class Board extends React.Component {
 
         /* Mouse Capturing Work */
         canvas.addEventListener('mousemove', function (e) {
+            console.log(e);
             last_mouse.x = mouse.x;
             last_mouse.y = mouse.y;
 
@@ -48,10 +49,10 @@ class Board extends React.Component {
 
 
         /* Drawing on Paint App */
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 3;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'blue';
+        ctx.strokeStyle = 'red';
 
         canvas.addEventListener('mousedown', function (e) {
             canvas.addEventListener('mousemove', onPaint, false);
